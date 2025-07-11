@@ -229,7 +229,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📊 Stats
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/voice-translation-bot?style=social)
+![GitHub stars](https://img.shields.io/github/stars/fernandogitme/telegramBot?style=social)
 ![GitHub forks](https://img.shields.io/github/forks/yourusername/voice-translation-bot?style=social)
 ![GitHub issues](https://img.shields.io/github/issues/yourusername/voice-translation-bot)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/voice-translation-bot)
