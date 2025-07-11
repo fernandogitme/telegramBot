@@ -194,7 +194,6 @@ python -m pytest tests/
 | **Audio Transcription** | Whisper Base | 3-5 seconds | CPU/GPU |
 | **Language Translation** | Phi3:3.8b-mini-128k-instruct-q4_K_M | 2-5 seconds | CPU/GPU |
 | **Audio Generation** | TTS Engine | 20 seconds (GPU) / 40 seconds (CPU) | GPU acceleration optional |
-| **Memory Usage** | - | 2-4GB RAM | GPU acceleration |
 
 ### Performance Summary
 
