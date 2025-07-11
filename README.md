@@ -182,7 +182,6 @@ pip install -r requirements-dev.txt
 python -m pytest tests/
 ```
 
-## 📈 Performance Metrics (30-second audio)
 
 ## 📈 Performance Metrics (30-second audio)
 
