@@ -227,22 +227,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Coqui TTS](https://github.com/coqui-ai/TTS) for text-to-speech
 - [python-telegram-bot](https://python-telegram-bot.org/) for Telegram integration
 
-## 📊 Stats
-
-![GitHub stars](https://img.shields.io/github/stars/fernandogitme/telegramBot?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/voice-translation-bot?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/voice-translation-bot)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/voice-translation-bot)
 
 ## 🌟 Show Your Support
 
 If this project helped you, please consider giving it a ⭐ star on GitHub!
 
 ---
-
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/yourusername">Your Name</a>
-</p>
 
 <p align="center">
   <a href="#-voice-translation-bot-for-telegram">Back to Top</a>
