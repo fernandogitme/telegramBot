@@ -40,7 +40,7 @@ A powerful Telegram bot that automatically transcribes voice messages and transl
 1. **Clone the repository**
    ```bash
    git clone https://github.com/fernandogitme/telegramBot.git
-   cd voice-translation-bot
+   cd telegramBot
    ```
 
 2. **Install dependencies**
