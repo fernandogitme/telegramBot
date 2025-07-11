@@ -147,8 +147,8 @@ Use `/idiomas_disponibles` to see the complete list.
 ```
 
 ## 🔒 Privacy & Security
-Ollama AI 
- (Translation) 
+
+- **Ollama AI (Translation)**: LLM locally installed (phi3:3.8b-mini-128k-instruct-q4_K_M)
 - **No Data Storage**: Voice messages are processed temporarily and deleted immediately
 - **Local Processing**: All AI processing happens locally (no external API calls)
 - **User Control**: Users can remove their language preferences at any time
