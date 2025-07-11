@@ -62,7 +62,7 @@ A powerful Telegram bot that automatically transcribes voice messages and transl
 
 5. **Run the bot**
    ```bash
-   python main.py
+   python bot.py
    ```
 
 
