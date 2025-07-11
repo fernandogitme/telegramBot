@@ -164,24 +164,6 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Setup
-
-```bash
-# Clone your fork
-git clone https://github.com/yourusername/voice-translation-bot.git
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install development dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-
-# Run tests
-python -m pytest tests/
-```
-
 
 ## 📈 Performance Metrics (30-second audio)
 
