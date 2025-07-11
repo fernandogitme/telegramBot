@@ -138,16 +138,17 @@ Use `/idiomas_disponibles` to see the complete list.
 │   Telegram API  │────│  Voice Message  │────│  Whisper AI     │
 │                 │    │   Processing    │    │  (Transcription)│
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-                                │
-                                ▼
+                                                      │
+                                                      ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Coqui TTS     │────│  Translation    │────│   Ollama AI     │
-│  (Audio Gen)    │    │   Management    │    │  (Translation)  │
+│   Coqui TTS     │────│    Ollama AI    │────│   Translation   │
+│  (Audio Gen)    │    │   Translation   │    │    Management   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
 ## 🔒 Privacy & Security
-
+Ollama AI 
+ (Translation) 
 - **No Data Storage**: Voice messages are processed temporarily and deleted immediately
 - **Local Processing**: All AI processing happens locally (no external API calls)
 - **User Control**: Users can remove their language preferences at any time
@@ -181,12 +182,27 @@ pip install -r requirements-dev.txt
 python -m pytest tests/
 ```
 
-## 📈 Performance
+## 📈 Performance Metrics (30-second audio)
 
-- **Transcription**: ~2-5 seconds per voice message
-- **Translation**: ~1-3 seconds per target language
-- **Audio Generation**: ~2-4 seconds per translation
-- **Memory Usage**: ~2-4GB RAM (with GPU acceleration)
+### Processing Times
+
+| Feature | Model | Processing Time | Hardware Requirements |
+|---------|-------|----------------|----------------------|
+| **Audio Transcription** | Whisper Large v3 | 20-30 seconds | GPU recommended |
+| **Language Translation** | Phi3:3.8b-mini-128k-instruct-q4_K_M | 2-5 seconds | CPU/GPU |
+| **Audio Generation** | TTS Engine | 20 seconds (GPU) / 40 seconds (CPU) | GPU acceleration optional |
+| **Memory Usage** | - | 2-4GB RAM | GPU acceleration |
+
+### Performance Summary
+
+- ⚡ **Total Processing Time**: ~42-75 seconds for complete workflow
+- 🔄 **Concurrent Processing**: Multiple audio files supported
+- 💾 **Memory Efficient**: Optimized for consumer hardware
+- 🚀 **GPU Acceleration**: 2x faster audio generation with GPU
+
+---
+
+*Performance may vary based on hardware specifications and audio complexity*
 
 ## 🐛 Troubleshooting
 
