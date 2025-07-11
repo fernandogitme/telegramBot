@@ -184,18 +184,23 @@ python -m pytest tests/
 
 ## 📈 Performance Metrics (30-second audio)
 
+## 📈 Performance Metrics (30-second audio)
+
 ### Processing Times
 
 | Feature | Model | Processing Time | Hardware Requirements |
 |---------|-------|----------------|----------------------|
 | **Audio Transcription** | Whisper Large v3 | 20-30 seconds | GPU recommended |
+| **Audio Transcription** | Whisper Base | 3-5 seconds | CPU/GPU |
 | **Language Translation** | Phi3:3.8b-mini-128k-instruct-q4_K_M | 2-5 seconds | CPU/GPU |
 | **Audio Generation** | TTS Engine | 20 seconds (GPU) / 40 seconds (CPU) | GPU acceleration optional |
 | **Memory Usage** | - | 2-4GB RAM | GPU acceleration |
 
 ### Performance Summary
 
-- ⚡ **Total Processing Time**: ~42-75 seconds for complete workflow
+- ⚡ **Total Processing Time**: 
+  - With Whisper Large v3: ~42-75 seconds
+  - With Whisper Base: ~25-45 seconds
 - 🔄 **Concurrent Processing**: Multiple audio files supported
 - 💾 **Memory Efficient**: Optimized for consumer hardware
 - 🚀 **GPU Acceleration**: 2x faster audio generation with GPU
