@@ -42,6 +42,13 @@ def get_available_speakers(tts_instance):
     # Fallback con speakers conocidos
     return ["Claribel Dervla", "Daisy Studious", "Andrew Chipper", "Craig Gutsy"]
 
+TEXTO_INSTRUCCIONES_BASICAS = (
+    "**⚙️ Para empezar, cada miembro debe hacer esto:**\n"
+    "1. Usen el comando `/idioma` seguido del código de su idioma. Por ejemplo, si hablan español, escriban:\n"
+    "`/idioma es`\n\n"
+    "2. Para ver una lista de idiomas disponibles, usen el comando `/idiomas_disponibles`."
+)
+
 try:
     tts = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
     
@@ -455,9 +462,68 @@ async def comando_limpiar_json(update: Update, context: ContextTypes.DEFAULT_TYP
         await update.message.reply_text("❌ Error al limpiar el JSON")
 
 # Comandos
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Usa /idioma <código> para configurar tu idioma. Ej: /idioma es")
+async def ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Muestra un mensaje de ayuda completo con instrucciones de uso.
+    """
+    texto_ayuda = (
+        "🤖 **¡Hola! Soy el bot de traducción por voz.**\n\n"
+        "Mi función es transcribir y traducir automáticamente las notas de voz que se envían en este chat para que todos puedan entenderse.\n\n"
+        "**¿Cómo funciono?**\n"
+        "1. Cada usuario configura su idioma una sola vez.\n"
+        "2. Alguien envía un audio.\n"
+        "3. Yo lo transcribo y lo envío como texto. Si hay usuarios con otros idiomas configurados, también envío la traducción para ellos.\n\n"
+        "--- \n\n"
+        "**COMANDOS DISPONIBLES**\n\n"
+        "⚙️ `/idioma <código>`\n"
+        "Configura tu idioma. ¡Este es el paso más importante! Reemplaza `<código>` por el de tu idioma.\n"
+        "*Ejemplos:*\n"
+        "`/idioma es` (para español)\n"
+        "`/idioma en` (para inglés)\n"
+        "`/idioma fr` (para francés)\n\n"
+        "🌍 `/idiomas_disponibles`\n"
+        "Muestra la lista completa de códigos de idioma que puedes usar.\n\n"
+        "ℹ️ `/ayuda`\n"
+        "Muestra este mensaje de ayuda."
+    )
+    await update.message.reply_text(texto_ayuda, parse_mode='Markdown')
 
+# Hacemos que /start sea un alias de /ayuda
+start = ayuda
+
+async def idiomas_disponibles(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Muestra una lista formateada de los idiomas disponibles.
+    """
+    try:
+        lista_idiomas = []
+        # Agrupar los idiomas en columnas para que sea más legible
+        columnas = 3
+        items_por_columna = -(-len(NOMBRES_IDIOMAS) // columnas)  # Ceiling division
+        nombres_ordenados = sorted(NOMBRES_IDIOMAS.items())
+        
+        # Crear la lista de texto formateado
+        for i in range(items_por_columna):
+            linea = []
+            for j in range(columnas):
+                index = i + j * items_por_columna
+                if index < len(nombres_ordenados):
+                    codigo, nombre = nombres_ordenados[index]
+                    linea.append(f"`{codigo}` - {nombre.capitalize()}")
+            lista_idiomas.append("   ".join(linea))
+
+        texto_final = "🌍 **Idiomas Disponibles** 🌍\n\nUsa el código de la izquierda con el comando `/idioma`.\n\n" + "\n".join(lista_idiomas)
+        
+        # Telegram tiene un límite de 4096 caracteres por mensaje. Si la lista es muy larga, la dividimos.
+        if len(texto_final) > 4096:
+            await update.message.reply_text("La lista de idiomas es muy larga. Aquí están los más comunes:\n`es` - Español, `en` - Inglés, `fr` - Francés, `de` - Alemán, `pt` - Portugués, `it` - Italiano, `ja` - Japonés, `zh` - Chino, `ru` - Ruso.")
+        else:
+            await update.message.reply_text(texto_final, parse_mode='Markdown')
+            
+    except Exception as e:
+        print(f"Error en /idiomas_disponibles: {e}")
+        await update.message.reply_text("❌ No se pudo mostrar la lista de idiomas.")
+        
 async def idioma(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(context.args) != 1:
         await update.message.reply_text("Uso: /idioma <código_idioma> (ej: /idioma en)")
@@ -476,7 +542,7 @@ async def idioma(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f"🔧 Idioma configurado: Usuario {user_id} → {idioma}")
     await update.message.reply_text(f"Idioma registrado: {idioma}")
 
-async def mostrar(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def mostrar_idiomas(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = str(update.message.chat_id)
     if chat_id in idiomas:
         texto = "\n".join(f"{uid}: {lang}" for uid, lang in idiomas[chat_id].items())
@@ -595,17 +661,98 @@ async def manejar_audio(update: Update, context: ContextTypes.DEFAULT_TYPE):
             os.unlink(temp_path)
             print("🧹 Archivo de audio entrante temporal eliminado")
 
+async def bienvenida(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Función que se ejecuta cuando se agregan nuevos miembros al grupo
+    """
+    try:
+        # Verificar si el bot es uno de los nuevos miembros
+        nuevos_miembros = update.message.new_chat_members
+        bot_agregado = any(member.id == context.bot.id for member in nuevos_miembros)
+        
+        if bot_agregado:
+            print(f"🎉 Bot agregado al grupo: {update.effective_chat.title}")
+            texto_bienvenida = (
+                "¡Hola a todos! 👋 Soy su **asistente de traducción por voz**.\n\n"
+                "Mi trabajo es simple: cuando envíen una nota de voz, la transcribiré y la traduciré para aquellos que hablen un idioma diferente.\n\n"
+                f"{TEXTO_INSTRUCCIONES_BASICAS}\n\n"
+                "¡Estoy listo para romper las barreras del idioma! 🎤🌍"
+            )
+            await update.message.reply_text(texto_bienvenida, parse_mode='Markdown')
+        else:
+            # Si otros usuarios se unen al grupo, también mostrar instrucciones básicas
+            nombres_nuevos = [member.first_name for member in nuevos_miembros if not member.is_bot]
+            if nombres_nuevos:
+                # Verificar si estos usuarios ya estaban en el grupo antes
+                chat_id = str(update.effective_chat.id)
+                usuarios_existentes = set(idiomas.get(chat_id, {}).keys())
+                
+                # Filtrar solo usuarios realmente nuevos (que no tienen idioma configurado)
+                usuarios_nuevos = []
+                for member in nuevos_miembros:
+                    if not member.is_bot and str(member.id) not in usuarios_existentes:
+                        usuarios_nuevos.append(member.first_name)
+                
+                if usuarios_nuevos:
+                    texto_nuevos = (
+                        f"¡Bienvenidos {', '.join(usuarios_nuevos)}! 👋\n\n"
+                        f"{TEXTO_INSTRUCCIONES_BASICAS}"
+                    )
+                    await update.message.reply_text(texto_nuevos, parse_mode='Markdown')
+                
+    except Exception as e:
+        print(f"❌ Error en función bienvenida: {e}")     
+        
+        
+# Función adicional para manejar cuando el bot se añade a un grupo (alternativa)
+async def bot_agregado_grupo(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Función específica para cuando el bot es agregado a un grupo
+    """
+    try:
+        if update.message.new_chat_members:
+            for member in update.message.new_chat_members:
+                if member.id == context.bot.id:
+                    print(f"🎉 Bot agregado al grupo: {update.effective_chat.title} ({update.effective_chat.id})")
+                    
+                    texto_inicial = (
+                        "¡Hola a todos! 👋 Soy su **asistente de traducción por voz**.\n\n"
+                        "🎯 **¿Qué hago?**\n"
+                        "• Transcribo automáticamente las notas de voz\n"
+                        "• Las traduzco para usuarios que hablen otros idiomas\n"
+                        "• Genero audio de las traducciones (cuando es posible)\n\n"
+                        f"{TEXTO_INSTRUCCIONES_BASICAS}\n\n"
+                        "💡 **Tip:** Usen `/ayuda` para ver todos los comandos disponibles.\n\n"
+                        "¡Estoy listo para romper las barreras del idioma! 🎤🌍"
+                    )
+                    
+                    await update.message.reply_text(texto_inicial, parse_mode='Markdown')
+                    break
+                    
+    except Exception as e:
+        print(f"❌ Error al procesar bot agregado al grupo: {e}")
+
 # Main
 def main():
     print("🚀 Iniciando bot...")
     app = ApplicationBuilder().token(TOKEN).build()
 
+    # Comandos básicos
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("ayuda", ayuda))
+    app.add_handler(CommandHandler("idiomas_disponibles", idiomas_disponibles))
     app.add_handler(CommandHandler("idioma", idioma))
-    app.add_handler(CommandHandler("mostrar_idiomas", mostrar))
+    app.add_handler(CommandHandler("mostrar_idiomas", mostrar_idiomas))
     app.add_handler(CommandHandler("limpiar_json", comando_limpiar_json))
+    
+    # Handlers de mensajes
     app.add_handler(MessageHandler(filters.VOICE | filters.AUDIO, manejar_audio))
+    
+    # IMPORTANTE: Estos handlers deben estar activos para que funcione la bienvenida
+    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, bienvenida))
     app.add_handler(MessageHandler(filters.StatusUpdate.MIGRATE, manejar_migracion_grupo))
+    
+    # Handler para cambios de miembros
     app.add_handler(ChatMemberHandler(manejar_cambio_miembros, ChatMemberHandler.CHAT_MEMBER))
     
     print("Bot en marcha...")
