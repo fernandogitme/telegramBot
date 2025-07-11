@@ -197,8 +197,8 @@ python -m pytest tests/
 ### Performance Summary
 
 - ⚡ **Total Processing Time**: 
-  - With Whisper Large v3: ~42-75 seconds
-  - With Whisper Base: ~25-45 seconds
+  - With Whisper Large v3: ~20-30 seconds
+  - With Whisper Base: ~2-5 seconds
 - 🔄 **Concurrent Processing**: Multiple audio files supported
 - 💾 **Memory Efficient**: Optimized for consumer hardware
 - 🚀 **GPU Acceleration**: 2x faster audio generation with GPU
